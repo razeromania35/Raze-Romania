@@ -1,1 +1,534 @@
+<!DOCTYPE html>
+<html lang="ro" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulament Server - Raze Romania FiveM</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            900: '#881337',
+                            accent: '#ff2a5f',
+                            purple: '#a855f7'
+                        },
+                        dark: {
+                            bg: '#0a0a0f',
+                            card: '#12131c',
+                            border: '#1f2130',
+                            hover: '#1a1c29'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0f;
+            color: #e2e8f0;
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.3);
+        }
+        .glow-text {
+            text-shadow: 0 0 12px rgba(244, 63, 94, 0.5);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2130;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f43f5e;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
 
+    <!-- Toast Notification System -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-in-out bg-brand-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toast-message" class="font-medium">Mesaj notificare</span>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-dark-bg/80 border-b border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo & Server Name -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-purple flex items-center justify-center shadow-lg shadow-brand-500/30">
+                        <i class="fa-solid fa-fire text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-white via-slate-200 to-brand-400 bg-clip-text text-transparent">RAZE</span>
+                        <span class="text-xs font-bold text-brand-500 block -mt-1 tracking-widest uppercase">ROMANIA</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-brand-400 bg-brand-500/10">
+                        <i class="fa-solid fa-house mr-2"></i>Acasă
+                    </button>
+                    <button onclick="switchTab('rules')" id="nav-rules" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-gray-400 hover:text-white hover:bg-dark-hover transition-all duration-200">
+                        <i class="fa-solid fa-book mr-2"></i>Regulament
+                    </button>
+                    <button onclick="switchTab('team')" id="nav-team" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-gray-400 hover:text-white hover:bg-dark-hover transition-all duration-200">
+                        <i class="fa-solid fa-shield-halved mr-2"></i>Echipă Staff
+                    </button>
+                    <button onclick="switchTab('discord')" id="nav-discord" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm text-gray-400 hover:text-white hover:bg-dark-hover transition-all duration-200">
+                        <i class="fa-brands fa-discord mr-2"></i>Discord
+                    </button>
+                </nav>
+
+                <!-- Action Buttons (Connect & Copy IP) -->
+                <div class="hidden sm:flex items-center space-x-3">
+                    <button onclick="copyToClipboard('connect play.razeromania.ro', 'IP-ul a fost copiat!')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-dark-card border border-dark-border text-gray-300 hover:bg-dark-border hover:text-white transition-all duration-200 flex items-center space-x-2">
+                        <i class="fa-solid fa-copy text-brand-500"></i>
+                        <span>play.razeromania.ro</span>
+                    </button>
+                    <a href="fivem://connect/play.razeromania.ro" class="px-5 py-2 text-xs font-bold rounded-lg bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white shadow-lg shadow-brand-600/30 transition-all duration-200 flex items-center space-x-2 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span>CONECTEAZĂ-TE</span>
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-dark-hover">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-card border-b border-dark-border px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('home')" class="w-full text-left px-3 py-2 rounded-md font-medium text-gray-300 hover:bg-dark-hover">Acasă</button>
+            <button onclick="switchTab('rules')" class="w-full text-left px-3 py-2 rounded-md font-medium text-gray-300 hover:bg-dark-hover">Regulament</button>
+            <button onclick="switchTab('team')" class="w-full text-left px-3 py-2 rounded-md font-medium text-gray-300 hover:bg-dark-hover">Echipă Staff</button>
+            <button onclick="switchTab('discord')" class="w-full text-left px-3 py-2 rounded-md font-medium text-gray-300 hover:bg-dark-hover">Discord</button>
+            <div class="pt-2 border-t border-dark-border flex flex-col space-y-2">
+                <button onclick="copyToClipboard('connect play.razeromania.ro', 'IP-ul a fost copiat!')" class="w-full py-2 text-center text-xs font-semibold rounded-lg bg-dark-bg border border-dark-border text-gray-300">
+                    Copiază IP Server
+                </button>
+                <a href="fivem://connect/play.razeromania.ro" class="w-full py-2 text-center text-xs font-bold rounded-lg bg-brand-600 text-white">
+                    Conectează-te FiveM
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- SECTION: HOME / LANDING -->
+        <section id="section-home" class="space-y-12">
+            <!-- Hero Banner -->
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-dark-card via-dark-bg to-dark-card border border-dark-border p-8 md:p-16 text-center shadow-2xl">
+                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative z-10 max-w-3xl mx-auto space-y-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-brand-500/10 text-brand-400 border border-brand-500/20 inline-block">
+                        Comunitate Hard Roleplay
+                    </span>
+                    <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight">
+                        Bine ai venit pe <span class="bg-gradient-to-r from-brand-400 via-brand-500 to-brand-purple bg-clip-text text-transparent">Raze Romania</span>
+                    </h1>
+                    <p class="text-gray-400 text-base md:text-lg">
+                        Pentru a asigura o experiență plăcută și un Roleplay de înaltă calitate pentru toți jucătorii, te rugăm să citești și să respecți regulamentul serverului nostru.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4 pt-4">
+                        <button onclick="switchTab('rules')" class="px-8 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold shadow-lg shadow-brand-600/30 transition-all transform hover:-translate-y-1">
+                            Citește Regulamentul <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                        <button onclick="switchTab('discord')" class="px-8 py-3.5 rounded-xl bg-dark-card hover:bg-dark-hover border border-dark-border text-white font-bold transition-all">
+                            Alătură-te pe Discord
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Server Quick Stats/Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 rounded-2xl bg-dark-card border border-dark-border hover:border-brand-500/40 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Roleplay Calitativ</h3>
+                    <p class="text-gray-400 text-sm">Puteți experimenta simulări realiste ale vieții de zi cu zi, cu facțiuni bine structurate și economie echilibrată.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-dark-card border border-dark-border hover:border-brand-500/40 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-gavel"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Staff Activ & Imparțial</h3>
+                    <p class="text-gray-400 text-sm">Echipa noastră de administratori este mereu pregătită să te ajute și să rezolve orice situație creată neconformă.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-dark-card border border-dark-border hover:border-brand-500/40 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-shield-virus"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Sistem Anticheat</h3>
+                    <p class="text-gray-400 text-sm">Serverul beneficiază de protecție avansată împotriva trișorilor pentru a menține un mediu de joc corect.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: RULES (REGULAMENT) -->
+        <section id="section-rules" class="hidden space-y-8">
+            
+            <!-- Rules Top Bar: Title & Search -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-dark-card p-6 rounded-2xl border border-dark-border">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-white">Regulament General & Ghid</h2>
+                    <p class="text-sm text-gray-400">Caută termeni sau navighează prin categoriile de reguli.</p>
+                </div>
+                <!-- Search Bar -->
+                <div class="relative w-full md:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="text" id="rule-search" onkeyup="filterRules()" placeholder="Caută regulă (ex: VDM, RDM, Meta)..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-dark-bg border border-dark-border text-white text-sm focus:outline-none focus:border-brand-500 transition-colors">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                
+                <!-- Category Tabs (Sidebar) -->
+                <div class="lg:col-span-1 space-y-2">
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mb-2">Categorii Regulament</div>
+                    <button onclick="setRuleCategory('all')" id="cat-all" class="cat-btn w-full text-left px-4 py-3 rounded-xl font-medium text-sm transition-all bg-brand-600 text-white flex items-center justify-between">
+                        <span><i class="fa-solid fa-list-ul mr-2.5"></i>Toate Regulile</span>
+                        <span class="text-xs bg-black/30 px-2 py-0.5 rounded-full" id="count-all">0</span>
+                    </button>
+                    <button onclick="setRuleCategory('general')" id="cat-general" class="cat-btn w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-dark-card hover:text-white transition-all flex items-center justify-between">
+                        <span><i class="fa-solid fa-book-open mr-2.5"></i>Reguli Generale</span>
+                        <span class="text-xs bg-dark-border px-2 py-0.5 rounded-full" id="count-general">0</span>
+                    </button>
+                    <button onclick="setRuleCategory('terms')" id="cat-terms" class="cat-btn w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-dark-card hover:text-white transition-all flex items-center justify-between">
+                        <span><i class="fa-solid fa-graduation-cap mr-2.5"></i>Termeni Roleplay</span>
+                        <span class="text-xs bg-dark-border px-2 py-0.5 rounded-full" id="count-terms">0</span>
+                    </button>
+                    <button onclick="setRuleCategory('illegal')" id="cat-illegal" class="cat-btn w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-dark-card hover:text-white transition-all flex items-center justify-between">
+                        <span><i class="fa-solid fa-mask mr-2.5"></i>Mafii & Ilegalități</span>
+                        <span class="text-xs bg-dark-border px-2 py-0.5 rounded-full" id="count-illegal">0</span>
+                    </button>
+                    <button onclick="setRuleCategory('sanctions')" id="cat-sanctions" class="cat-btn w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-dark-card hover:text-white transition-all flex items-center justify-between">
+                        <span><i class="fa-solid fa-triangle-exclamation mr-2.5"></i>Sancțiuni & Penalizări</span>
+                        <span class="text-xs bg-dark-border px-2 py-0.5 rounded-full" id="count-sanctions">0</span>
+                    </button>
+                </div>
+
+                <!-- Rule Cards List -->
+                <div class="lg:col-span-3 space-y-4" id="rules-container">
+                    <!-- Rule items generated dynamically by JS -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION: TEAM STAFF -->
+        <section id="section-team" class="hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <h2 class="text-3xl font-extrabold text-white">Echipa Administrativă</h2>
+                <p class="text-gray-400 text-sm">Persoanele responsabile cu menținerea ordinii și ajutorul acordat pe serverul Raze Romania.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Staff Member 1 -->
+                <div class="p-6 rounded-2xl bg-dark-card border border-dark-border flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-brand-600 to-brand-purple flex items-center justify-center text-2xl text-white font-bold">
+                        R
+                    </div>
+                    <div>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-400 border border-red-500/20">Fondator</span>
+                        <h4 class="text-lg font-bold text-white mt-1">Razer</h4>
+                        <p class="text-xs text-gray-400">Discord: razer_official</p>
+                    </div>
+                </div>
+                <!-- Staff Member 2 -->
+                <div class="p-6 rounded-2xl bg-dark-card border border-dark-border flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-2xl text-white font-bold">
+                        A
+                    </div>
+                    <div>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-blue-500/10 text-blue-400 border border-blue-500/20">Head Admin</span>
+                        <h4 class="text-lg font-bold text-white mt-1">AlexRoleplay</h4>
+                        <p class="text-xs text-gray-400">Discord: alex_staff</p>
+                    </div>
+                </div>
+                <!-- Staff Member 3 -->
+                <div class="p-6 rounded-2xl bg-dark-card border border-dark-border flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-2xl text-white font-bold">
+                        M
+                    </div>
+                    <div>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Administrator</span>
+                        <h4 class="text-lg font-bold text-white mt-1">Mihai_G</h4>
+                        <p class="text-xs text-gray-400">Discord: mihaig99</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: DISCORD -->
+        <section id="section-discord" class="hidden space-y-8">
+            <div class="max-w-3xl mx-auto bg-dark-card border border-dark-border rounded-3xl p-8 md:p-12 text-center space-y-6">
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-[#5865F2]/10 text-[#5865F2] flex items-center justify-center text-4xl shadow-lg">
+                    <i class="fa-brands fa-discord"></i>
+                </div>
+                <h2 class="text-3xl font-black text-white">Comunitatea Discord</h2>
+                <p class="text-gray-400 text-sm max-w-lg mx-auto">
+                    Alătură-te canalului nostru oficial de Discord pentru sesizări, donații, aplicații în facțiuni și anunțuri importante legate de server.
+                </p>
+                <div class="pt-4">
+                    <a href="https://discord.gg" target="_blank" class="inline-flex items-center space-x-3 px-8 py-4 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold shadow-xl shadow-[#5865F2]/20 transition-all transform hover:-translate-y-1">
+                        <i class="fa-brands fa-discord text-2xl"></i>
+                        <span>Intră pe Serverul de Discord</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: PRIVACY & LEGAL -->
+        <section id="section-privacy" class="hidden space-y-6 max-w-4xl mx-auto bg-dark-card p-8 rounded-2xl border border-dark-border">
+            <h2 class="text-2xl font-bold text-white">Termeni și Politică de Confidențialitate</h2>
+            <div class="text-gray-400 text-sm space-y-4 leading-relaxed">
+                <p>Toate drepturile asupra brandului <strong>Raze Romania</strong> sunt rezervate. Serverul nostru nu este afiliat direct cu Rockstar Games sau Take-Two Interactive.</p>
+                <p>Prin conectarea pe serverul nostru de FiveM, acceptați regulamentul prezentat pe această pagină și sunteți de acord cu eventualele sancțiuni aplicate de echipa Staff în cazul nerespectării regulilor.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-dark-border bg-dark-bg/60 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white text-xs font-bold">R</div>
+                <span class="text-sm font-semibold text-gray-400">© 2026 Raze Romania. Toate drepturile rezervate.</span>
+            </div>
+            <div class="flex space-x-6 text-sm text-gray-500">
+                <button onclick="switchTab('privacy')" class="hover:text-gray-300 transition-colors">Termeni & Confidențialitate</button>
+                <button onclick="switchTab('rules')" class="hover:text-gray-300 transition-colors">Regulament</button>
+                <button onclick="switchTab('discord')" class="hover:text-gray-300 transition-colors">Discord</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Database Rules Array
+        const rulesData = [
+            {
+                id: "REG-01",
+                title: "Random Deathmatch (RDM)",
+                category: "general",
+                desc: "Uciderea sau atacarea unui alt jucător fără un motiv întemeiat IC (In-Character) și fără un Roleplay prealabil este strict interzisă."
+            },
+            {
+                id: "REG-02",
+                title: "Vehicle Deathmatch (VDM)",
+                category: "general",
+                desc: "Folosirea vehiculului ca armă pentru a călca sau lovi intenționat alți jucători este complet interzisă."
+            },
+            {
+                id: "REG-03",
+                title: "Metagaming (MG)",
+                category: "terms",
+                desc: "Folosirea informațiilor obținute Out Of Character (OOC), precum din Discord, live-uri sau chat-uri, în scopuri In Character (IC)."
+            },
+            {
+                id: "REG-04",
+                title: "Powergaming (PG)",
+                category: "terms",
+                desc: "Realizarea unor acțiuni imposibile în viața reală (ex: conducerea pe munte cu un supersport, ignorarea accidentelor grave sau forțarea Roleplay-ului asupra altcuiva fără drept de replică)."
+            },
+            {
+                id: "REG-05",
+                title: "Fear Roleplay (FearRP)",
+                category: "terms",
+                desc: "Trebuie să simulezi frica pentru viața personajului tău atunci când ești amenințat cu o armă sau ești într-o situație de inferioritate numerică evidentă."
+            },
+            {
+                id: "REG-06",
+                title: "Jafuri și Ostatici",
+                category: "illegal",
+                desc: "Este interzisă luarea ostaticilor falși (prieteni/cunoscuți). Orice jaf trebuie să aibă minimum 2 polițiști activi pe server."
+            },
+            {
+                id: "REG-07",
+                title: "Zone Safe (Safezones)",
+                category: "general",
+                desc: "În Zonele Safe (Spital, Secția de Poliție, Spawn, Mechanici) sunt interzise infracțiunile, jafurile, atacurile sau comportamentul agresiv."
+            },
+            {
+                id: "REG-08",
+                title: "Sancțiuni și Avertismente",
+                category: "sanctions",
+                desc: "Abaterile se sancționează în funcție de gravitate cu: Avertisment Verbal, Warn, Jail (Ajutor Staff) sau Ban Permanent."
+            }
+        ];
+
+        let activeCategory = 'all';
+
+        // Render Rules based on filter & category
+        function renderRules() {
+            const container = document.getElementById('rules-container');
+            const searchInput = document.getElementById('rule-search').value.toLowerCase();
+            
+            container.innerHTML = '';
+
+            const filteredRules = rulesData.filter(rule => {
+                const matchesCategory = (activeCategory === 'all' || rule.category === activeCategory);
+                const matchesSearch = rule.title.toLowerCase().includes(searchInput) || 
+                                      rule.desc.toLowerCase().includes(searchInput) ||
+                                      rule.id.toLowerCase().includes(searchInput);
+                return matchesCategory && matchesSearch;
+            });
+
+            if(filteredRules.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-dark-card rounded-2xl border border-dark-border">
+                        <i class="fa-solid fa-folder-open text-4xl text-gray-600 mb-3"></i>
+                        <p class="text-gray-400 font-medium">Nu a fost găsită nicio regulă pentru căutarea ta.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredRules.forEach(rule => {
+                const card = document.createElement('div');
+                card.className = "p-6 rounded-2xl bg-dark-card border border-dark-border hover:border-brand-500/30 transition-all duration-200 space-y-3";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-dark-bg border border-dark-border text-brand-400">${rule.id}</span>
+                        <button onclick="copyToClipboard('${rule.id}: ${rule.title}', 'Regula a fost copiată!')" class="text-xs text-gray-500 hover:text-white transition-colors flex items-center space-x-1">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>Copiază</span>
+                        </button>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">${rule.title}</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">${rule.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+
+            updateCategoryCounts();
+        }
+
+        // Category Filter Navigation
+        function setRuleCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-dark-card hover:text-white transition-all flex items-center justify-between";
+            });
+            
+            const activeBtn = document.getElementById(`cat-${cat}`);
+            if(activeBtn) {
+                activeBtn.className = "cat-btn w-full text-left px-4 py-3 rounded-xl font-medium text-sm transition-all bg-brand-600 text-white flex items-center justify-between shadow-lg shadow-brand-600/20";
+            }
+            renderRules();
+        }
+
+        function filterRules() {
+            renderRules();
+        }
+
+        function updateCategoryCounts() {
+            document.getElementById('count-all').innerText = rulesData.length;
+            document.getElementById('count-general').innerText = rulesData.filter(r => r.category === 'general').length;
+            document.getElementById('count-terms').innerText = rulesData.filter(r => r.category === 'terms').length;
+            document.getElementById('count-illegal').innerText = rulesData.filter(r => r.category === 'illegal').length;
+            document.getElementById('count-sanctions').innerText = rulesData.filter(r => r.category === 'sanctions').length;
+        }
+
+        // Tab Switcher Logic
+        function switchTab(tabId) {
+            const sections = ['home', 'rules', 'team', 'discord', 'privacy'];
+            sections.forEach(id => {
+                const sec = document.getElementById(`section-${id}`);
+                const nav = document.getElementById(`nav-${id}`);
+                if (sec) sec.classList.add('hidden');
+                if (nav) {
+                    nav.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm text-gray-400 hover:text-white hover:bg-dark-hover transition-all duration-200";
+                }
+            });
+
+            const activeSec = document.getElementById(`section-${tabId}`);
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+            if (activeNav) {
+                activeNav.className = "nav-btn px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-brand-400 bg-brand-500/10";
+            }
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Notification Toast System
+        function copyToClipboard(text, message) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast(message);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.innerText = msg;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initialize App
+        window.onload = function() {
+            renderRules();
+        };
+    </script>
+</body>
+</html>
